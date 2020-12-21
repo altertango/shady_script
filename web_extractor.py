@@ -55,7 +55,7 @@ with open(f, "rt", encoding="utf8") as csvfile:
                     print(aux)
                     output.append(aux)
         count+=1
-        if count>30: break
+        #if count>30: break
 with open('output.csv', 'wt', newline='') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
     for o in output:
