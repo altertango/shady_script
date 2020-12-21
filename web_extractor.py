@@ -1,15 +1,18 @@
 import urllib.request
 from bs4 import BeautifulSoup
 import csv
+from time import sleep
 
 find_rows=['PHE7','PHE9','PHE10','PHE11', 'PHE13']
 
 output=[]
 f="Numbers.csv"
+count=0
 with open(f, "rt", encoding="utf8") as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for line in reader:
         TheNumber = line[0]
+        print("searching for number " + str(TheNumber))
 
 
         url="https://gradecard.ignou.ac.in/gradecardB/Result.asp?eno="+str(TheNumber)+"&program=BSC&hidden_submit=OK"
@@ -35,8 +38,9 @@ with open(f, "rt", encoding="utf8") as csvfile:
         
         rows = soup.find_all('tr')
         table=[row.find_all('td') for row in rows]
-        aux=[TheNumber]
+        
         for r in table:
+            aux=[TheNumber]
             isPH=False
             for c in r:
                 ct=c.get_text()
@@ -46,8 +50,12 @@ with open(f, "rt", encoding="utf8") as csvfile:
                 elif ct in find_rows:
                     aux.append(ct)
                     isPH=True
-        output.append(aux)
-        
+            if len(aux)>1:
+                if int(aux[-1])>80 and int(aux[-1])<90:
+                    print(aux)
+                    output.append(aux)
+        count+=1
+        if count>30: break
 with open('output.csv', 'wt', newline='') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
     for o in output:
